@@ -4,7 +4,7 @@
 
 ### 1.1 Product Name
 
-dY> Enterprise Full-Stack Platform (Angular 21 | React 19 | Vue 3 | .NET 8)
+Enterprise Full-Stack Platform (Angular 21 | React 19 | Vue 3 | .NET 8)
 
 ### 1.2 Purpose
 
