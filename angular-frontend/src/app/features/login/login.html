@@ -1,0 +1,20 @@
+<div class="login-container">
+  <h2>Login</h2>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label>Email</label>
+      <input type="email" formControlName="email">
+    </div>
+    <div>
+      <label>Password</label>
+      <input type="password" formControlName="password">
+    </div>
+    <button type="submit" [disabled]="!loginForm.valid">Login</button>
+  </form>
+
+  <div class="oauth-buttons">
+    <button (click)="loginWith('google')">Login with Google</button>
+    <button (click)="loginWith('microsoft')">Login with Microsoft</button>
+    <button (click)="loginWith('apple')">Login with Apple</button>
+  </div>
+</div>

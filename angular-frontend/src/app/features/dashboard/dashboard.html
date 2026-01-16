@@ -1,0 +1,71 @@
+@if (authService.user(); as user) {
+<div class="dashboard-container">
+    <nav class="nav">
+        <div style="display: flex; align-items: center; gap: 2rem">
+            <h2 style="color: var(--primary)">Platform</h2>
+            <div style="display: flex; gap: 1.5rem; color: var(--text-muted); font-size: 0.875rem">
+                <span style="color: var(--text); cursor: pointer">Overview</span>
+                <span style="cursor: pointer">Analytics</span>
+                <span style="cursor: pointer">Reports</span>
+            </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 1.5rem">
+            <!-- Lucide icons would be nice here, but sticking to standard icons/text for now or I can add lucide-angular later -->
+            <div class="user-badge">
+                <div class="avatar">
+                    {{ user.email[0].toUpperCase() }}
+                </div>
+                <span style="font-size: 0.875rem">{{ user.email }}</span>
+                <button (click)="authService.logout().subscribe()"
+                    style="background: transparent; border: none; color: var(--text-muted); cursor: pointer; display: flex"
+                    title="Logout">
+                    <span style="font-size: 1.2rem">⎋</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div style="margin-bottom: 2rem">
+            <h1 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem">Dashboard Overview</h1>
+            <p style="color: var(--text-muted)">Welcome back, {{ user.email }}! Here's what's happening today.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem">
+            <!-- Stats cards -->
+            <div class="auth-card" style="padding: 1.5rem; max-width: none">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem">
+                    <span style="color: var(--text-muted); font-size: 0.875rem">Total Users</span>
+                    <span style="color: var(--primary)">👤</span>
+                </div>
+                <div style="font-size: 1.5rem; font-weight: 700">2,543</div>
+                <div style="font-size: 0.75rem; color: var(--success); margin-top: 0.5rem">+12.5%</div>
+            </div>
+
+            <div class="auth-card" style="padding: 1.5rem; max-width: none">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem">
+                    <span style="color: var(--text-muted); font-size: 0.875rem">Active Sessions</span>
+                    <span style="color: var(--primary)">💻</span>
+                </div>
+                <div style="font-size: 1.5rem; font-weight: 700">432</div>
+                <div style="font-size: 0.75rem; color: var(--success); margin-top: 0.5rem">+5.2%</div>
+            </div>
+
+            <div class="auth-card" style="padding: 1.5rem; max-width: none">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 1rem">
+                    <span style="color: var(--text-muted); font-size: 0.875rem">API Health</span>
+                    <span style="color: var(--primary)">⚙️</span>
+                </div>
+                <div style="font-size: 1.5rem; font-weight: 700">100%</div>
+                <div style="font-size: 0.75rem; color: var(--success); margin-top: 0.5rem">Stable</div>
+            </div>
+        </div>
+    </main>
+</div>
+} @else {
+<div
+    style="min-height: 100vh; display: flex; align-items: center; justify-content: center; background: var(--bg); color: white;">
+    <p>Loading user info...</p>
+</div>
+}

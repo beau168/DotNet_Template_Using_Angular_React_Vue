@@ -1,0 +1,19 @@
+# .gitignore for .NET and Frontend
+**/bin/
+**/obj/
+[Oo]bj/
+[Bb]in/
+*.user
+.vs/
+.vscode/
+
+**/node_modules/
+**/dist/
+**/build/
+.angular/
+.next/
+*.log
+npm-debug.log*
+
+.DS_Store
+Thumbs.db
