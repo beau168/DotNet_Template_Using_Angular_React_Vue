@@ -4,11 +4,11 @@
 
 ### 1.1 Product Name
 
-Angular-First .NET Full-Stack Platform (Azure-Optimized, BFF Architecture)
+dY> Enterprise Full-Stack Platform (Angular 21 | React 19 | Vue 3 | .NET 8)
 
 ### 1.2 Purpose
 
-Build a **production-ready, enterprise-grade starter platform** using the **latest .NET (LTS)** and **Angular (latest stable)**, optimized for **Microsoft Azure**, following **Clean Architecture** and the **Backend-for-Frontend (BFF) pattern**. The platform must support **separate repositories**, strong security, scalability, and allow **frontend swapping (Angular → React)** without backend changes.
+Build a **production-ready, enterprise-grade starter platform** using the **latest .NET API (Core & BFF)** and three interchangeable modern frontends (**Angular, React, Vue**). The platform follows **Clean Architecture** and the **Backend-for-Frontend (BFF) pattern**, managed within a **Monorepo** for unified development and testing.
 
 ### 1.3 Target Users
 
@@ -19,162 +19,114 @@ Build a **production-ready, enterprise-grade starter platform** using the **late
 
 ### 1.4 Goals
 
-* Provide a reusable, opinionated but flexible starter architecture
-* Enforce best practices for security, maintainability, and scalability
-* Minimize coupling between frontend and backend
-* Optimize for Azure deployment and operations
+* Provide a reusable, opinionated but flexible starter architecture.
+* Enforce best practices for security, maintainability, and scalability.
+* Minimize coupling between frontends and backend via a unified BFF.
+* Provide choice of frontend framework (Angular, React, or Vue) with zero backend changes.
+* Maintain 100% test coverage across all layers.
 
 ### 1.5 Non-Goals
 
-* No business-specific domain logic
-* No UI/UX branding beyond a basic responsive layout
-* No mobile app (future extension)
+* No business-specific domain logic beyond identity/auth.
+* No UI/UX branding beyond a premium, responsive glassmorphism design.
+* No native mobile app (future extension via Maui/React Native).
 
 ---
 
 ## 2. Success Metrics
 
-* Backend can serve multiple frontends without modification
-* Angular frontend can be replaced with React using the same BFF contracts
-* Services deploy successfully to Azure with minimal configuration
-* New feature modules can be added with minimal architectural changes
+* Single backend (BFF) serves three different frontends (Angular, React, Vue) without modification.
+* All frontends share the same security model (Secure Cookies/BFF).
+* CI/CD pipelines can build and test the entire monorepo.
+* All 30+ tests across the platform are passing (Green status).
 
 ---
 
 ## 3. High-Level Architecture
 
-### 3.1 System Components
+### 3.1 System Components (Monorepo)
 
-1. **Angular Frontend** (Primary UI)
-2. **BFF API (.NET Web API)** – frontend-specific adapter
-3. **Core Backend API (.NET Web API)** – domain and business logic
-4. **Azure Infrastructure** – hosting, security, monitoring
+1.  **Frontends (`/frontends`)**:
+    *   **Angular Frontend** (v21.1.0 - Signals-based)
+    *   **React Frontend** (v19.0.0 - Context-based)
+    *   **Vue Frontend** (v3.5.0 - Pinia-based)
+2.  **BFF API (`/bff-api`)** – .NET 8 frontend-specific orchestrator (Security & Aggregation).
+3.  **Core Backend API (`/core-api`)** – .NET 8 domain and business logic (Persistence & CQRS).
+4.  **Azure Infrastructure** – Hosting via App Services, Security via Entra ID/Key Vault.
 
 ### 3.2 Architecture Pattern
 
-* Clean Architecture (Core API)
-* Backend-for-Frontend (BFF)
-* REST-based communication
-* Environment-based configuration
+* **Clean Architecture** (Core API)
+* **Backend-for-Frontend (BFF)** (Secure Cookie Auth)
+* **CQRS with MediatR** (Internal logic)
+* **Unified Design System** (Global CSS Variables)
 
 ### 3.3 Architecture Diagram (Logical)
 
-```
-[ Angular App ]
-       |
-       v
-[ BFF API (.NET) ]
-       |
-       v
-[ Core API (.NET) ]
-       |
-       v
-[ Azure SQL ]
+```text
+[ Angular App ]   [ React App ]   [ Vue App ]
+       |                |               |
+       +----------------+---------------+
+                        |
+                        v
+               [ BFF API (.NET 8) ]
+                        |
+                        v
+              [ Core API (.NET 8) ]
+                        |
+                        v
+                [ Persistence/SQL ]
 ```
 
 ---
 
 ## 4. Functional Requirements
 
-### 4.1 Core Backend API (.NET)
+### 4.1 Core Backend API (.NET 8)
 
-#### Description
+* **Clean Architecture Layers:** Domain (Entities), Application (Logic/CQRS), Infrastructure (Persistence), API (Delivery).
+* **Security:** Password hashing via BCrypt.Net-Next.
+* **Patterns:** CQRS with MediatR 14, Repository Pattern.
+* **Documentation:** Swagger/OpenAPI.
+* **Testing:** xUnit, Moq, FluentAssertions.
 
-Provides domain-driven, frontend-agnostic business logic and data access. Consumed only by the BFF.
+### 4.2 BFF API (.NET 8)
 
-#### Requirements
+* **Auth Orchestration:** Secure Session Cookies (SameSite=Lax, HttpOnly).
+* **Communication:** Typed HTTP Clients for Core API.
+* **Cross-Cutting:** Unified error handling, CORS enforcement.
+* **Testing:** xUnit, Integration tests for auth flows.
 
-* Use **latest .NET LTS**
-* Clean Architecture layers:
+### 4.3 Frontends (Interchangeable)
 
-  * Domain
-  * Application
-  * Infrastructure
-  * API
-* RESTful endpoints
-* SOLID principles enforced
-* EF Core with Azure SQL
-* DTO-based input/output
-* Auto-mapping strategy
-* Global exception handling
-* API versioning
-* Health checks
-* Swagger / OpenAPI
-* Authentication-ready (JWT, Azure AD compatible)
+* **Shared Design:** Premium Glassmorphism UI using global CSS tokens.
+* **Angular 21:** Signals-first state, Standalone components, New Control Flow.
+* **React 19:** Functional components, Context API, Lucide icons.
+* **Vue 3:** Composition API, Pinia state, Lucide icons.
+* **Common Features:** Login, Signup, Dashboard, Auth Interceptors.
 
 ---
 
-### 4.2 BFF API (.NET)
+## 5. Monorepo Strategy
 
-#### Description
+### 5.1 Structure
 
-Acts as a secure gateway and adapter between frontend and Core API.
+```text
+/angular-frontend    - Angular 21 project
+/react-frontend      - React 19 project (Vite)
+/vue-frontend        - Vue 3 project (Vite)
+/bff-api             - .NET 8 BFF Service
+/core-api            - .NET 8 Core Domain Service
+/shared-assets       - Global CSS/Icons (conceptually shared)
+PRD.md               - This document
+TASKS.md             - Tracking
+```
 
-#### Responsibilities
+### 5.2 Benefits
 
-* Authentication and token handling
-* API aggregation and orchestration
-* Response shaping for Angular
-* Caching (in-memory; Redis-ready)
-* Rate limiting
-* CORS enforcement (frontend-specific)
-
-#### Requirements
-
-* No business logic
-* Calls Core API via HTTP client
-* Angular-specific DTOs allowed
-* Azure AD / Entra ID ready
-* Secure cookie or token-based auth
-
----
-
-### 4.3 Frontend – Angular (Primary)
-
-#### Description
-
-Primary user interface built with Angular and optimized for enterprise scalability.
-
-#### Requirements
-
-* Angular (latest stable)
-* Standalone APIs
-* Signals-first state management
-* Modular folder structure
-* Environment-based API configuration
-* Auth via BFF
-* HTTP interceptors
-* Global error handling
-* Responsive layout
-
-#### Core Screens
-
-* Login
-* Dashboard
-* Example CRUD feature
-
----
-
-## 5. Frontend Swap Strategy (Angular → React)
-
-### Principles
-
-* Backend APIs remain unchanged
-* BFF contracts remain stable
-* Only frontend implementation changes
-
-### What Stays the Same
-
-* Core API
-* BFF API
-* Authentication model
-* OpenAPI contracts
-
-### What Changes
-
-* Frontend repo
-* UI state management
-* Component implementation
+* **Atomic Commits:** Update API and UI in a single PR.
+* **Shared Logic:** Easier to maintain consistency across frontends.
+* **Unified CI:** Single pipeline to verify the whole platform.
 
 ---
 
@@ -182,141 +134,50 @@ Primary user interface built with Angular and optimized for enterprise scalabili
 
 ### 6.1 Security
 
-* JWT authentication
-* Azure AD ready
-* Secure secrets via Azure Key Vault
-* HTTPS enforced
+* **Secure Cookies:** No JWTs in LocalStorage (prevents XSS leaks).
+* **BFF Pattern:** Hides internal API structure from the public web.
+* **Encryption:** BCrypt for credentials.
 
-### 6.2 Performance
+### 6.2 Visual Excellence (Aesthetics)
 
-* API response shaping via BFF
-* Caching support
-* Optimized Azure App Service hosting
+* **Premium UI:** Glassmorphism, smooth gradients, and micro-animations.
+* **Responsiveness:** Mobile-first, fluid layouts across all three frameworks.
+* **Typography:** Modern sans-serif stacks (Inter/Outfit).
 
-### 6.3 Scalability
+### 6.3 Performance
 
-* Stateless services
-* Horizontal scaling on Azure
-* Database scalability via Azure SQL tiers
-
-### 6.4 Maintainability
-
-* Clear separation of concerns
-* Consistent folder structure
-* Strong typing and DTO boundaries
+* **Vite:** High-speed development for React/Vue.
+* **Angular Signals:** Fine-grained reactivity for performance.
+* **Async/Await:** Non-blocking operations throughout the .NET stack.
 
 ---
 
-## 7. Azure Optimization Requirements
+## 7. Deployment & Operations
 
-### Azure Services
-
-* Azure App Service (Linux)
-* Azure SQL Database
-* Azure Key Vault
-* Managed Identity
-* Application Insights
-* Azure API Management (optional)
-
-### Environments
-
-* Local
-* Development
-* QA
-* Production
+### CI/CD (GitHub Actions)
+* Build and Test all 5 projects.
+* Enforce "All Green" status before merge.
 
 ---
 
-## 8. Repository Strategy (Separate Repos)
+## 8. Current Project Status
 
-### 8.1 Core API Repo – `core-api`
-
-```
-/src
-  /Api
-  /Application
-  /Domain
-  /Infrastructure
-/tests
-/.github
-README.md
-```
-
-### 8.2 BFF API Repo – `bff-api`
-
-```
-/src
-  /Api
-  /Adapters
-  /Clients
-/tests
-/.github
-README.md
-```
-
-### 8.3 Angular Frontend Repo – `angular-frontend`
-
-```
-/src
-  /app
-    /core
-    /features
-    /shared
-/environments
-/.github
-README.md
-```
+| Project | Health | Framework |
+| :--- | :--- | :--- |
+| **Core API** | [dYY GREEN] | .NET 8 / xUnit |
+| **BFF API** | [dYY GREEN] | .NET 8 / xUnit |
+| **Angular** | [dYY GREEN] | v21 / Vitest |
+| **React** | [dYY GREEN] | v19 / Vitest |
+| **Vue** | [dYY GREEN] | v3 / Vitest |
 
 ---
 
-## 9. Deployment & Operations
+## 9. Future Enhancements
 
-### Local Development
-
-* Run services independently
-* Environment-based configs
-* Swagger for API validation
-
-### CI/CD
-
-* GitHub Actions or Azure DevOps
-* Build, test, and deploy per repo
-
-### Monitoring
-
-* Application Insights
-* Centralized logging
-
----
-
-## 10. Risks & Mitigations
-
-| Risk             | Mitigation            |
-| ---------------- | --------------------- |
-| Tight coupling   | Enforce BFF boundary  |
-| Auth complexity  | Azure AD–ready design |
-| Over-engineering | Minimal starter scope |
-
----
-
-## 11. Future Enhancements
-
-* React frontend repo
-* Mobile app (BFF reuse)
-* GraphQL BFF option
-* Microservices decomposition
-* Redis caching
-* Infrastructure as Code (Bicep/Terraform)
-
----
-
-## 12. Acceptance Criteria
-
-* Platform deploys successfully to Azure
-* Angular app communicates only with BFF
-* BFF communicates only with Core API
-* Frontend swap requires no backend changes
-* Repos usable as GitHub starter templates
+* **Shared Component Library:** Create a headless UI library used by all three frontends.
+* **Mobile Support:** Add a React Native or .NET Maui client.
+* **Infrastructure as Code:** Bicep/Terraform for Azure provisioning.
+* **Feature Flags:** Integration with Azure App Configuration.
 
 ---
 
